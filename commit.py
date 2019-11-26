@@ -36,13 +36,17 @@ def validate_repo():
 
 def collect_changes():
     global file_list
-    files = exec_cmd('git status | grep modified:')
-    files = list((f for f in files if f != "modified:"))
-    if len(files) ==0 :
+    # Check for newly added files or untracked files
+    untracked_files = exec_cmd('git ls-files --others --exclude-standard')
+    print("\nFollowing are untracked files.\nPlease add them if you want to commit and push them. ")
+    for uf in list(untracked_files):
+        print(uf)
+    files = exec_cmd('git ls-files -m')
+    if len(list(files)) ==0 :
         print("There are no changes to be committed:")
         exit()
     print("List of files to be committed :")
-    for file in files:
+    for file in list(files):
        print(file)
        file_list += file+' '
 
